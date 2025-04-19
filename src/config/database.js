@@ -2,9 +2,9 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME || 'nature_glow_db',
+    process.env.DB_NAME || 'naturegrow',
     process.env.DB_USER || 'root',
-    process.env.DB_PASSWORD || '',
+    process.env.DB_PASSWORD || '062498',
     {
         host: process.env.DB_HOST || 'localhost',
         dialect: 'mysql',
