@@ -148,7 +148,8 @@ Respuesta:
 
 #### Crear Usuario (puede crear usuarios normales y admins)
 ```http
-POST /api/users/users
+POST 
+/api/users/users
 Authorization: Bearer jwt_token
 Content-Type: application/json
 
@@ -298,12 +299,12 @@ Respuesta:
 
 #### Actualizar Stock de Producto (Admin)
 ```http
-PATCH /api/products/:id/stock
+PATCH /api/products/1/stock
 Content-Type: application/json
-Authorization: Bearer {token}
+Authorization: Bearer {tu_token_de_administrador}
 
 {
-    "stock": 150
+    "quantity": 150
 }
 
 Respuesta:
@@ -317,8 +318,8 @@ Respuesta:
 
 #### Cambiar Estado del Producto (Admin)
 ```http
-PATCH /api/products/:id/toggle-status
-Authorization: Bearer {token}
+PATCH /api/products/1/toggle-status
+Authorization: Bearer {tu_token_de_administrador}
 
 Respuesta:
 {
@@ -331,9 +332,9 @@ Respuesta:
 
 #### Actualizar Producto (Admin)
 ```http
-PUT /api/products/:id
+PUT /api/products/1
 Content-Type: application/json
-Authorization: Bearer {token}
+Authorization: Bearer {tu_token_de_administrador}
 
 {
     "name": "Crema Hidratante Premium",
@@ -342,7 +343,8 @@ Authorization: Bearer {token}
     "categoryId": 1,
     "brand": "Nature Grow Premium",
     "ingredients": "Agua purificada, glicerina orgánica, aceites naturales premium",
-    "usage": "Aplicar en rostro limpio con suaves movimientos circulares"
+    "usage": "Aplicar en rostro limpio con suaves movimientos circulares",
+    "stock": 50
 }
 
 Respuesta:
@@ -351,7 +353,7 @@ Respuesta:
     "name": "Crema Hidratante Premium",
     "description": "Crema hidratante mejorada para todo tipo de piel",
     "price": 34.99,
-    "stock": 150,
+    "stock": 50,
     "categoryId": 1,
     "brand": "Nature Grow Premium",
     "isActive": true
