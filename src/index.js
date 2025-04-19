@@ -1,59 +1,56 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const sequelize = require('./config/database');
-const models = require('./models');
+const morgan = require('morgan');
+const { sequelize } = require('./models');
 
-// Configuración de variables de entorno
-dotenv.config();
+// Importar rutas
+const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 const app = express();
 
 // Middleware
 app.use(cors());
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Rutas
-const productRoutes = require('./routes/product.routes');
-const userRoutes = require('./routes/user.routes');
-const orderRoutes = require('./routes/order.routes');
-
-// Ruta principal
-app.get('/', (req, res) => {
-    res.json({ message: 'Bienvenido a Nature Glow API' });
-});
-
-// Uso de rutas
-app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
 
-// Manejo de errores 404
-app.use((req, res, next) => {
-    res.status(404).json({ message: 'Ruta no encontrada' });
+// Ruta de prueba
+app.get('/', (req, res) => {
+    res.json({ message: 'Bienvenido a Nature Grow API' });
 });
 
-// Manejo de errores generales
+// Manejo de errores
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ 
-        message: 'Error interno del servidor',
-        error: process.env.NODE_ENV === 'development' ? err.message : {}
-    });
+    res.status(500).json({ message: 'Algo salió mal!', error: err.message });
 });
 
 // Puerto
 const PORT = process.env.PORT || 3000;
 
-// Sincronización de la base de datos y inicio del servidor
-sequelize.sync({ force: false })
-    .then(() => {
-        console.log('Base de datos sincronizada');
+// Iniciar servidor
+const startServer = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Conexión a la base de datos establecida correctamente.');
+        
+        // Sincronizar modelos con la base de datos
+        await sequelize.sync({ alter: true });
+        console.log('Base de datos sincronizada.');
+        
         app.listen(PORT, () => {
             console.log(`Servidor corriendo en el puerto ${PORT}`);
         });
-    })
-    .catch(err => {
-        console.error('Error al sincronizar la base de datos:', err);
-    }); 
+    } catch (error) {
+        console.error('No se pudo conectar a la base de datos:', error);
+    }
+};
+
+startServer(); 

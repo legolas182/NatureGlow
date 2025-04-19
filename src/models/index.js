@@ -1,29 +1,44 @@
-const User = require('./User');
-const Product = require('./Product');
-const Category = require('./Category');
-const Order = require('./Order');
-const OrderItem = require('./OrderItem');
+const { Sequelize } = require('sequelize');
+const config = require('../config/database');
 
-// Relaciones Category - Product
-Category.hasMany(Product, { foreignKey: 'categoryId' });
-Product.belongsTo(Category, { foreignKey: 'categoryId' });
+// Crear instancia de Sequelize
+const sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    {
+        host: config.host,
+        dialect: config.dialect,
+        logging: config.logging,
+        pool: config.pool
+    }
+);
 
-// Relaciones User - Order
-User.hasMany(Order, { foreignKey: 'userId' });
-Order.belongsTo(User, { foreignKey: 'userId' });
+// Importar definiciones de modelos
+const defineUserModel = require('./UserModel');
+const defineProductModel = require('./ProductModel');
+const defineCategoryModel = require('./CategoryModel');
 
-// Relaciones Order - OrderItem
-Order.hasMany(OrderItem, { foreignKey: 'orderId' });
-OrderItem.belongsTo(Order, { foreignKey: 'orderId' });
+// Inicializar modelos
+const UserModel = defineUserModel(sequelize);
+const ProductModel = defineProductModel(sequelize);
+const CategoryModel = defineCategoryModel(sequelize);
 
-// Relaciones Product - OrderItem
-Product.hasMany(OrderItem, { foreignKey: 'productId' });
-OrderItem.belongsTo(Product, { foreignKey: 'productId' });
+// Establecer asociaciones
+CategoryModel.hasMany(ProductModel, {
+    foreignKey: 'categoryId',
+    as: 'products'
+});
 
+ProductModel.belongsTo(CategoryModel, {
+    foreignKey: 'categoryId',
+    as: 'category'
+});
+
+// Exportar modelos y sequelize
 module.exports = {
-    User,
-    Product,
-    Category,
-    Order,
-    OrderItem
+    sequelize,
+    UserModel,
+    ProductModel,
+    CategoryModel
 }; 
