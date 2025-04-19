@@ -1,0 +1,304 @@
+{
+  "info": {
+    "name": "Nature Glow API",
+    "description": "Colección de endpoints para la API de Nature Glow - Tienda Virtual de Cuidado Personal",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar todos los productos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Obtener producto específico",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/products/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"description\": \"\",\n  \"price\": 0,\n  \"stock\": 0,\n  \"categoryId\": 0,\n  \"brand\": \"\",\n  \"imageUrl\": \"\",\n  \"ingredients\": \"\",\n  \"usage\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/api/products/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"description\": \"\",\n  \"price\": 0,\n  \"stock\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/products/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Obtener usuario específico",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"\",\n  \"email\": \"\",\n  \"password\": \"\",\n  \"phone\": \"\",\n  \"address\": \"\",\n  \"role\": \"client\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"\",\n  \"phone\": \"\",\n  \"address\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Órdenes",
+      "item": [
+        {
+          "name": "Listar órdenes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Obtener orden específica",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/orders/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear orden",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 0,\n  \"shippingAddress\": \"\",\n  \"shippingCity\": \"\",\n  \"shippingZip\": \"\",\n  \"shippingCountry\": \"\",\n  \"paymentMethod\": \"credit_card\",\n  \"items\": [\n    {\n      \"productId\": 0,\n      \"quantity\": 0\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar orden",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/api/orders/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"processing\",\n  \"paymentStatus\": \"completed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar orden",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/orders/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "orders", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+} 
