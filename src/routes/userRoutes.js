@@ -13,6 +13,14 @@ const userValidations = [
         .withMessage('La contraseña debe tener al menos 6 caracteres')
 ];
 
+const adminUserValidations = [
+    ...userValidations,
+    body('role')
+        .optional()
+        .isIn(['user', 'admin'])
+        .withMessage('Rol inválido')
+];
+
 // Rutas públicas
 router.post('/register', userValidations, UserController.register);
 router.post('/login', [
@@ -31,7 +39,8 @@ router.put('/profile', authenticateToken, [
 // Rutas de administrador
 router.get('/users', authenticateToken, isAdmin, UserController.getAllUsers);
 router.get('/users/:id', authenticateToken, isAdmin, UserController.getUserById);
-router.put('/users/:id', authenticateToken, isAdmin, userValidations, UserController.updateUser);
+router.post('/users', authenticateToken, isAdmin, adminUserValidations, UserController.createUser);
+router.put('/users/:id', authenticateToken, isAdmin, adminUserValidations, UserController.updateUser);
 router.delete('/users/:id', authenticateToken, isAdmin, UserController.deleteUser);
 
 module.exports = router; 

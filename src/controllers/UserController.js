@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { UserModel } = require('../models');
 
 class UserController {
-    // Registro de usuario
+    // Registro público (solo usuarios normales)
     static async register(req, res) {
         try {
             const errors = validationResult(req);
@@ -17,7 +17,14 @@ class UserController {
                 return res.status(400).json({ message: 'El correo electrónico ya está registrado' });
             }
 
-            const user = await UserModel.create(req.body);
+            // Forzar rol 'user' para registro público
+            const userData = {
+                ...req.body,
+                role: 'user',
+                isActive: true
+            };
+
+            const user = await UserModel.create(userData);
             const token = jwt.sign(
                 { id: user.id, role: user.role },
                 process.env.JWT_SECRET || 'your-secret-key',
@@ -36,6 +43,42 @@ class UserController {
             });
         } catch (error) {
             res.status(500).json({ message: 'Error al registrar usuario', error: error.message });
+        }
+    }
+
+    // Crear usuario (admin puede crear usuarios y otros admins)
+    static async createUser(req, res) {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
+            const { email, role } = req.body;
+            
+            // Verificar si el rol es válido
+            if (role && !['user', 'admin'].includes(role)) {
+                return res.status(400).json({ message: 'Rol inválido' });
+            }
+
+            const existingUser = await UserModel.findOne({ where: { email } });
+            if (existingUser) {
+                return res.status(400).json({ message: 'El correo electrónico ya está registrado' });
+            }
+
+            const user = await UserModel.create(req.body);
+            res.status(201).json({
+                message: 'Usuario creado exitosamente',
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    isActive: user.isActive
+                }
+            });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al crear usuario', error: error.message });
         }
     }
 
@@ -109,6 +152,9 @@ class UserController {
             if (!user) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
+
+            // Evitar que el usuario cambie su propio rol
+            delete req.body.role;
 
             await user.update(req.body);
             res.json({
@@ -192,6 +238,16 @@ class UserController {
             const user = await UserModel.findByPk(req.params.id);
             if (!user) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            // Evitar que se elimine el último admin
+            if (user.role === 'admin') {
+                const adminCount = await UserModel.count({ where: { role: 'admin' } });
+                if (adminCount <= 1) {
+                    return res.status(400).json({ 
+                        message: 'No se puede eliminar el último administrador' 
+                    });
+                }
             }
 
             await user.destroy();

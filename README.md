@@ -1,192 +1,454 @@
-# Nature Glow - Tienda Virtual de Cuidado Personal 
+# Nature Grow API
 
-## Descripción
-Nature Glow es una API REST para una tienda virtual especializada en productos de cuidado personal. El sistema está construido con Node.js, Express y MySQL, siguiendo una arquitectura MVC (Modelo-Vista-Controlador) con capas adicionales para el manejo de datos.
+API REST para la gestión de productos naturales de cuidado personal.
 
-## Estructura del Proyecto
-```
-nature_glow/
-├── src/
-│   ├── controllers/     # Controladores de la aplicación
-│   ├── models/         # Modelos de datos
-│   ├── routes/         # Rutas de la API
-│   ├── data/          # Capa de acceso a datos
-│   │   ├── repositories/  # Repositorios
-│   │   └── services/     # Servicios de negocio
-│   └── config/        # Configuraciones
-├── docs/             # Documentación de la API
-│   └── nature_glow_collection.json  # Colección de Postman
-├── .env              # Variables de entorno
-└── package.json      # Dependencias del proyecto
-```
+## Tabla de Contenidos
 
-## Modelos de Datos
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Configuración](#configuración)
+- [Credenciales por Defecto](#credenciales-por-defecto)
+- [Endpoints](#endpoints)
+- [Ejemplos de Uso](#ejemplos-de-uso)
+- [Base de Datos](#base-de-datos)
+- [Pruebas con Postman](#pruebas-con-postman)
 
-### Category (Categorías)
-- id: INT (PK, Auto-increment)
-- name: STRING (Unique)
-- description: TEXT
-- imageUrl: STRING
-- active: BOOLEAN
+## Requisitos
 
-### Product (Productos)
-- id: INT (PK, Auto-increment)
-- name: STRING
-- description: TEXT
-- price: DECIMAL(10,2)
-- stock: INT
-- categoryId: INT (FK)
-- brand: STRING
-- imageUrl: STRING
-- ingredients: TEXT
-- usage: TEXT
-- active: BOOLEAN
-- featured: BOOLEAN
+- Node.js >= 14.x
+- MySQL >= 8.0
+- npm >= 6.x
 
-### User (Usuarios)
-- id: INT (PK, Auto-increment)
-- firstName: STRING
-- lastName: STRING
-- email: STRING (Unique)
-- password: STRING (Encrypted)
-- phone: STRING
-- address: TEXT
-- role: ENUM('client', 'admin')
-- active: BOOLEAN
-- lastLogin: DATE
+## Instalación
 
-### Order (Pedidos)
-- id: INT (PK, Auto-increment)
-- userId: INT (FK)
-- status: ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled')
-- total: DECIMAL(10,2)
-- shippingAddress: TEXT
-- shippingCity: STRING
-- shippingZip: STRING
-- shippingCountry: STRING
-- paymentStatus: ENUM('pending', 'completed', 'failed', 'refunded')
-- paymentMethod: ENUM('credit_card', 'debit_card', 'cash', 'transfer')
-- notes: TEXT
-- shippingCost: DECIMAL(10,2)
-- discount: DECIMAL(10,2)
-
-### OrderItem (Items del Pedido)
-- id: INT (PK, Auto-increment)
-- orderId: INT (FK)
-- productId: INT (FK)
-- quantity: INT
-- price: DECIMAL(10,2)
-- discount: DECIMAL(10,2)
-- subtotal: VIRTUAL
-
-## Endpoints de la API
-
-### Productos
-- GET /api/products - Listar todos los productos
-- GET /api/products/:id - Obtener un producto específico
-- POST /api/products - Crear un nuevo producto
-- PUT /api/products/:id - Actualizar un producto
-- DELETE /api/products/:id - Eliminar un producto
-
-### Usuarios
-- GET /api/users - Listar usuarios
-- GET /api/users/:id - Obtener un usuario específico
-- POST /api/users - Crear un nuevo usuario
-- PUT /api/users/:id - Actualizar un usuario
-- DELETE /api/users/:id - Eliminar un usuario
-
-### Órdenes
-- GET /api/orders - Listar órdenes
-- GET /api/orders/:id - Obtener una orden específica
-- POST /api/orders - Crear una nueva orden
-- PUT /api/orders/:id - Actualizar una orden
-- DELETE /api/orders/:id - Eliminar una orden
-
-## Configuración del Proyecto
-
-### Requisitos Previos
-- Node.js (v14 o superior)
-- MySQL (v8 o superior)
-- npm o yarn
-
-### Variables de Entorno
-Crear un archivo `.env` en la raíz del proyecto con las siguientes variables:
-```
-PORT=3000
-NODE_ENV=development
-
-# Database Configuration
-DB_NAME=nature_glow_db
-DB_USER=root
-DB_PASSWORD=
-DB_HOST=localhost
-
-# JWT Secret
-JWT_SECRET=your_jwt_secret_key
-```
-
-### Instalación
-1. Clonar el repositorio
+1. Clonar el repositorio:
 ```bash
 git clone [url-del-repositorio]
+cd nature-grow
 ```
 
-2. Instalar dependencias
+2. Instalar dependencias:
 ```bash
 npm install
 ```
 
-3. Crear la base de datos en MySQL
-```sql
-CREATE DATABASE nature_glow_db;
+3. Configurar variables de entorno:
+```bash
+cp .env.example .env
 ```
 
-4. Iniciar el servidor
+4. Crear la base de datos en MySQL:
+```sql
+CREATE DATABASE nature_grow;
+```
+
+5. Iniciar el servidor:
 ```bash
 npm run dev
 ```
 
-## Características Implementadas
-- Arquitectura MVC con capas adicionales (repositories, services)
-- Modelos de datos con relaciones
-- Validaciones de datos
-- Encriptación de contraseñas
-- Manejo de errores centralizado
-- Configuración de CORS
-- Logging de errores
+## Configuración
 
-## Tecnologías Utilizadas
-- Node.js
-- Express.js
-- Sequelize (ORM)
-- MySQL
-- bcryptjs (encriptación)
-- dotenv (variables de entorno)
-- cors (seguridad)
+### Variables de Entorno (.env)
 
-## Próximas Características
-- Implementación de autenticación JWT
-- Sistema de roles y permisos
-- Validación de datos avanzada
-- Documentación con Swagger
-- Tests unitarios y de integración
-- Sistema de caché
-- Manejo de imágenes
-- Sistema de notificaciones 
+```env
+# Base de Datos
+DB_NAME=nature_grow
+DB_USER=root
+DB_PASSWORD=your_password
+DB_HOST=localhost
 
-## Documentación de la API
+# Servidor
+PORT=3000
 
-### Colección de Postman
-Se ha incluido una colección de Postman completa para probar todos los endpoints de la API. La colección se encuentra en el archivo `docs/nature_glow_collection.json`.
+# JWT
+JWT_SECRET=your-secret-key
 
-Para utilizarla:
+# Admin por Defecto
+ADMIN_EMAIL=admin@naturegrow.com
+ADMIN_PASSWORD=admin123456
+```
 
-1. Abre Postman
-2. Haz clic en "Import"
-3. Selecciona el archivo `docs/nature_glow_collection.json`
-4. La colección se importará con todos los endpoints organizados por categorías:
-   - Productos
-   - Usuarios
-   - Órdenes
+## Credenciales por Defecto
 
-La colección incluye una variable de entorno `base_url` configurada como `http://localhost:3000`. Puedes modificar esta variable según tu entorno de desarrollo.
+### Administrador
+```json
+{
+    "email": "admin@naturegrow.com",
+    "password": "admin123456"
+}
+```
+
+## Endpoints
+
+### Autenticación y Usuarios
+
+#### Registro Público (Solo usuarios normales)
+```http
+POST /api/users/register
+Content-Type: application/json
+
+{
+    "name": "Usuario Prueba",
+    "email": "usuario@test.com",
+    "password": "123456"
+}
+
+Respuesta:
+{
+    "message": "Usuario registrado exitosamente",
+    "token": "jwt_token",
+    "user": {
+        "id": 1,
+        "name": "Usuario Prueba",
+        "email": "usuario@test.com",
+        "role": "user"
+    }
+}
+```
+
+#### Login
+```http
+POST /api/users/login
+Content-Type: application/json
+
+{
+    "email": "usuario@test.com",
+    "password": "123456"
+}
+
+Respuesta:
+{
+    "message": "Login exitoso",
+    "token": "jwt_token",
+    "user": {
+        "id": 1,
+        "name": "Usuario Prueba",
+        "email": "usuario@test.com",
+        "role": "user"
+    }
+}
+```
+
+#### Obtener Perfil
+```http
+GET /api/users/profile
+Authorization: Bearer jwt_token
+
+Respuesta:
+{
+    "id": 1,
+    "name": "Usuario Prueba",
+    "email": "usuario@test.com",
+    "role": "user"
+}
+```
+
+### Rutas de Administrador
+
+#### Crear Usuario (puede crear usuarios normales y admins)
+```http
+POST /api/users/users
+Authorization: Bearer jwt_token
+Content-Type: application/json
+
+{
+    "name": "Nuevo Admin",
+    "email": "admin2@naturegrow.com",
+    "password": "123456",
+    "role": "admin"
+}
+
+Respuesta:
+{
+    "message": "Usuario creado exitosamente",
+    "user": {
+        "id": 2,
+        "name": "Nuevo Admin",
+        "email": "admin2@naturegrow.com",
+        "role": "admin",
+        "isActive": true
+    }
+}
+```
+
+#### Listar Usuarios
+```http
+GET /api/users/users
+Authorization: Bearer jwt_token
+
+Respuesta:
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "Usuario Prueba",
+            "email": "usuario@test.com",
+            "role": "user",
+            "isActive": true,
+            "createdAt": "2024-02-20T..."
+        },
+        // ...más usuarios
+    ]
+}
+```
+
+### Categorías
+
+#### Crear Categoría (Admin)
+```http
+POST /api/categories
+Authorization: Bearer jwt_token
+Content-Type: application/json
+
+{
+    "name": "Cuidado Facial",
+    "type": "facial",
+    "description": "Productos para el cuidado de la piel facial"
+}
+
+Respuesta:
+{
+    "id": 1,
+    "name": "Cuidado Facial",
+    "type": "facial",
+    "description": "Productos para el cuidado de la piel facial",
+    "isActive": true
+}
+```
+
+#### Listar Categorías (Público)
+```http
+GET /api/categories
+
+Respuesta:
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "Cuidado Facial",
+            "type": "facial",
+            "description": "Productos para el cuidado de la piel facial",
+            "isActive": true,
+            "products": [
+                {
+                    "id": 1,
+                    "name": "Crema Hidratante"
+                }
+            ]
+        }
+    ]
+}
+```
+
+### Productos
+
+#### Crear Producto (Admin)
+```http
+POST /api/products
+Authorization: Bearer jwt_token
+Content-Type: application/json
+
+{
+    "name": "Crema Hidratante",
+    "description": "Crema hidratante para todo tipo de piel",
+    "price": 29.99,
+    "stock": 100,
+    "categoryId": 1,
+    "brand": "Nature Grow",
+    "ingredients": "Agua, glicerina, aceites naturales",
+    "usage": "Aplicar en rostro limpio con movimientos circulares",
+    "featured": false
+}
+
+Respuesta:
+{
+    "id": 1,
+    "name": "Crema Hidratante",
+    "description": "Crema hidratante para todo tipo de piel",
+    "price": 29.99,
+    "stock": 100,
+    "categoryId": 1,
+    "brand": "Nature Grow",
+    "isActive": true
+}
+```
+
+#### Listar Productos (Público)
+```http
+GET /api/products
+
+Respuesta:
+{
+    "products": [
+        {
+            "id": 1,
+            "name": "Crema Hidratante",
+            "description": "Crema hidratante para todo tipo de piel",
+            "price": 29.99,
+            "stock": 100,
+            "category": {
+                "id": 1,
+                "name": "Cuidado Facial"
+            }
+        }
+    ]
+}
+```
+
+#### Actualizar Stock de Producto (Admin)
+```http
+PATCH /api/products/:id/stock
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "stock": 150
+}
+
+Respuesta:
+{
+    "id": 1,
+    "name": "Crema Hidratante",
+    "stock": 150,
+    "message": "Stock actualizado exitosamente"
+}
+```
+
+#### Cambiar Estado del Producto (Admin)
+```http
+PATCH /api/products/:id/toggle-status
+Authorization: Bearer {token}
+
+Respuesta:
+{
+    "id": 1,
+    "name": "Crema Hidratante",
+    "isActive": false,
+    "message": "Estado del producto actualizado exitosamente"
+}
+```
+
+#### Actualizar Producto (Admin)
+```http
+PUT /api/products/:id
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "name": "Crema Hidratante Premium",
+    "description": "Crema hidratante mejorada para todo tipo de piel",
+    "price": 34.99,
+    "categoryId": 1,
+    "brand": "Nature Grow Premium",
+    "ingredients": "Agua purificada, glicerina orgánica, aceites naturales premium",
+    "usage": "Aplicar en rostro limpio con suaves movimientos circulares"
+}
+
+Respuesta:
+{
+    "id": 1,
+    "name": "Crema Hidratante Premium",
+    "description": "Crema hidratante mejorada para todo tipo de piel",
+    "price": 34.99,
+    "stock": 150,
+    "categoryId": 1,
+    "brand": "Nature Grow Premium",
+    "isActive": true
+}
+```
+
+#### Eliminar Producto (Admin)
+```http
+DELETE /api/products/:id
+Authorization: Bearer {token}
+
+Respuesta:
+{
+    "message": "Producto eliminado exitosamente"
+}
+```
+
+## Ejemplos de Uso
+
+### 1. Flujo de Usuario Normal
+
+1. Registro:
+```bash
+curl -X POST http://localhost:3000/api/users/register \
+-H "Content-Type: application/json" \
+-d '{
+    "name": "Usuario Prueba",
+    "email": "usuario@test.com",
+    "password": "123456"
+}'
+```
+
+2. Login:
+```bash
+curl -X POST http://localhost:3000/api/users/login \
+-H "Content-Type: application/json" \
+-d '{
+    "email": "usuario@test.com",
+    "password": "123456"
+}'
+```
+
+### 2. Flujo de Administrador
+
+1. Login como admin:
+```bash
+curl -X POST http://localhost:3000/api/users/login \
+-H "Content-Type: application/json" \
+-d '{
+    "email": "admin@naturegrow.com",
+    "password": "admin123456"
+}'
+```
+
+2. Crear nuevo admin:
+```bash
+curl -X POST http://localhost:3000/api/users/users \
+-H "Authorization: Bearer {token}" \
+-H "Content-Type: application/json" \
+-d '{
+    "name": "Nuevo Admin",
+    "email": "admin2@naturegrow.com",
+    "password": "123456",
+    "role": "admin"
+}'
+```
+
+## Códigos de Respuesta
+
+- 200: Éxito
+- 201: Creado exitosamente
+- 400: Error de validación
+- 401: No autorizado
+- 403: Prohibido (no tiene permisos)
+- 404: No encontrado
+- 500: Error del servidor
+
+## Notas de Seguridad
+
+1. El sistema crea automáticamente un admin por defecto al iniciar
+2. Los usuarios normales no pueden:
+   - Crear otros usuarios
+   - Cambiar su propio rol
+   - Acceder a funciones administrativas
+3. Los administradores pueden:
+   - Crear otros administradores
+   - Gestionar todos los usuarios
+   - No pueden eliminar el último administrador del sistema
+
+## Contribuir
+
+1. Fork el proyecto
+2. Crear rama feature (`git checkout -b feature/AmazingFeature`)
+3. Commit cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir Pull Request
+
+## Licencia
+
+Este proyecto está bajo la Licencia ISC.

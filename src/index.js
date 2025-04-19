@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { sequelize } = require('./models');
+const createDefaultAdmin = require('./config/initAdmin');
 
 // Importar rutas
 const userRoutes = require('./routes/userRoutes');
@@ -44,6 +45,9 @@ const startServer = async () => {
         // Sincronizar modelos con la base de datos
         await sequelize.sync({ alter: true });
         console.log('Base de datos sincronizada.');
+
+        // Crear admin por defecto
+        await createDefaultAdmin();
         
         app.listen(PORT, () => {
             console.log(`Servidor corriendo en el puerto ${PORT}`);
