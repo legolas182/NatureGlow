@@ -12,6 +12,10 @@ API REST para la gestión de productos naturales de cuidado personal.
 - [Ejemplos de Uso](#ejemplos-de-uso)
 - [Base de Datos](#base-de-datos)
 - [Pruebas con Postman](#pruebas-con-postman)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Patrón Repository](#patrón-repository)
+- [Pruebas Unitarias](#pruebas-unitarias)
+- [GitFlow](#gitflow)
 
 ## Requisitos
 
@@ -454,3 +458,92 @@ curl -X POST http://localhost:3000/api/users/users \
 ## Licencia
 
 Este proyecto está bajo la Licencia ISC.
+
+## Estructura del Proyecto
+
+```
+src/
+├── controllers/     # Controladores de la aplicación
+├── models/         # Modelos de datos
+├── repositories/   # Implementación del patrón Repository
+│   ├── interfaces/    # Interfaces de repositorios
+│   └── implementations/  # Implementaciones concretas
+├── services/       # Lógica de negocio
+├── middleware/     # Middleware de autenticación y validación
+└── tests/          # Pruebas unitarias
+```
+
+## Patrón Repository
+
+El proyecto implementa el patrón Repository para separar la lógica de acceso a datos:
+
+```typescript
+// Ejemplo de interfaz de repositorio
+interface IProductRepository {
+    findAll(): Promise<Product[]>;
+    findById(id: number): Promise<Product>;
+    create(product: Product): Promise<Product>;
+    update(id: number, product: Product): Promise<Product>;
+    delete(id: number): Promise<void>;
+}
+
+// Implementación concreta
+class ProductRepository implements IProductRepository {
+    // Implementación de métodos
+}
+```
+
+## Pruebas Unitarias
+
+Para ejecutar las pruebas:
+
+```bash
+npm run test
+```
+
+Cobertura de pruebas:
+- Controllers: Validación de rutas y respuestas
+- Services: Lógica de negocio
+- Repositories: Acceso a datos
+- Middleware: Autenticación y autorización
+
+## GitFlow
+
+El proyecto sigue el flujo de trabajo GitFlow:
+
+### Ramas Principales
+- `main`: Código en producción
+- `develop`: Desarrollo activo
+
+### Ramas de Soporte
+- `feature/*`: Nuevas funcionalidades
+- `hotfix/*`: Correcciones urgentes
+- `release/*`: Preparación de versiones
+
+### Flujo de Trabajo
+1. Crear rama feature desde develop
+```bash
+git checkout develop
+git checkout -b feature/nueva-funcionalidad
+```
+
+2. Desarrollar y hacer commit de los cambios
+```bash
+git add .
+git commit -m "Descripción de los cambios"
+```
+
+3. Finalizar feature
+```bash
+git checkout develop
+git merge feature/nueva-funcionalidad
+```
+
+4. Preparar release
+```bash
+git checkout -b release/1.0.0
+# Realizar ajustes finales
+git checkout main
+git merge release/1.0.0
+git tag -a v1.0.0 -m "Version 1.0.0"
+```
