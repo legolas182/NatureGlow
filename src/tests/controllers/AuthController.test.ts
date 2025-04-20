@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AuthController } from '../../controllers/AuthController';
 import { UserRepository } from '../../repositories/implementations/UserRepository';
 import jwt from 'jsonwebtoken';
+import { createMockRequest, createMockResponse } from '../utils/testHelpers';
 
 jest.mock('../../repositories/implementations/UserRepository');
 jest.mock('jsonwebtoken');
@@ -15,13 +16,8 @@ describe('AuthController', () => {
     beforeEach(() => {
         mockUserRepository = new UserRepository() as jest.Mocked<UserRepository>;
         controller = new AuthController(mockUserRepository);
-        mockRequest = {
-            body: {}
-        };
-        mockResponse = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
+        mockRequest = createMockRequest();
+        mockResponse = createMockResponse();
         jest.clearAllMocks();
     });
 

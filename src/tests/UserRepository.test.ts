@@ -1,17 +1,10 @@
 import { UserRepository } from '../repositories/implementations/UserRepository';
 import { prisma } from '../database/prismaClient';
 import bcrypt from 'bcryptjs';
+import { mockPrisma } from './utils/testHelpers';
 
 jest.mock('../database/prismaClient', () => ({
-    prisma: {
-        user: {
-            findMany: jest.fn(),
-            findUnique: jest.fn(),
-            create: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn()
-        }
-    }
+    prisma: mockPrisma
 }));
 
 jest.mock('bcryptjs', () => ({

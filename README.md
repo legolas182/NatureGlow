@@ -14,9 +14,8 @@ API REST para la gestión de productos naturales de cuidado personal.
 - [Pruebas con Postman](#pruebas-con-postman)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Patrón Repository](#patrón-repository)
-- [Pruebas Unitarias](#pruebas-unitarias)
+- [Testing](#testing)
 - [GitFlow](#gitflow)
-- [Implementación Detallada](#implementación-detallada)
 
 ## Requisitos
 
@@ -494,15 +493,10 @@ class ProductRepository implements IProductRepository {
 }
 ```
 
-## Pruebas Unitarias
+## Testing
 
-Para ejecutar las pruebas:
+### Estructura y Organización
 
-```bash
-npm run test
-```
-
-### Estructura de Tests
 ```
 src/tests/
 ├── controllers/
@@ -515,107 +509,42 @@ src/tests/
 
 ### Componentes Testeados
 
-#### 1. AuthController
-- **Login**:
-  - ✓ Autenticación exitosa con credenciales correctas
-  - ✓ Manejo de contraseña incorrecta (401)
-  - ✓ Manejo de usuario no existente (404)
-- **Registro**:
-  - ✓ Registro exitoso de nuevo usuario
-  - ✓ Validación de email duplicado (400)
+#### Controllers
+- **AuthController**: 
+  - Login: Validación de credenciales correctas, contraseña incorrecta y usuario no existente
+  - Registro: Registro exitoso y manejo de email duplicado
+  
+- **CategoryController**:
+  - CRUD completo de categorías
+  - Manejo de estados (activar/desactivar)
+  - Validación de categorías existentes/no existentes
+  - Manejo de errores en operaciones
 
-#### 2. CategoryController
-- **Operaciones CRUD**:
-  - ✓ Listado de categorías activas
-  - ✓ Búsqueda por ID
-  - ✓ Creación de categoría
-  - ✓ Actualización de datos
-  - ✓ Manejo de estado activo/inactivo
-- **Validaciones**:
-  - ✓ Categoría no encontrada
-  - ✓ Errores de base de datos
-  - ✓ Datos inválidos
+- **ProductController**:
+  - Listado de productos activos
+  - Actualización de stock
+  - Cambio de estado de productos
+  - Manejo de errores y productos no existentes
 
-#### 3. ProductController
-- **Gestión de Productos**:
-  - ✓ Listado de productos activos
-  - ✓ Actualización de stock
-  - ✓ Control de estado del producto
-- **Manejo de Errores**:
-  - ✓ Producto no encontrado
-  - ✓ Validación de stock
-  - ✓ Errores de operación
+#### Middleware
+- **authMiddleware**:
+  - Validación de tokens JWT
+  - Verificación de rol de administrador
+  - Manejo de tokens inválidos o ausentes
 
-#### 4. Middleware de Autenticación
-- **Validación de Token**:
-  - ✓ Token válido
-  - ✓ Token ausente
-  - ✓ Token inválido
-- **Control de Roles**:
-  - ✓ Acceso de administrador
-  - ✓ Restricción de usuarios no admin
+### Tecnologías de Testing
+- Jest como framework principal
+- Mocking de repositorios y JWT
+- Simulación de Request/Response de Express
 
-### Configuración de Testing
-
-```javascript
-// jest.config.js
-module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'node',
-    coverageDirectory: 'coverage',
-    collectCoverageFrom: [
-        'src/**/*.ts',
-        '!src/types/**/*.ts'
-    ],
-    coverageThreshold: {
-        global: {
-            branches: 80,
-            functions: 80,
-            lines: 80,
-            statements: 80
-        }
-    }
-}
-```
-
-### Scripts Disponibles
-```json
-{
-    "scripts": {
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:coverage": "jest --coverage"
-    }
-}
-```
-
-### Cobertura Actual
-- **Líneas de Código**: 85%
-- **Funciones**: 90%
-- **Ramas**: 85%
-- **Declaraciones**: 85%
-
-### Mejores Prácticas Implementadas
-
-1. **Organización**:
-   - Tests agrupados por funcionalidad
-   - Nombres descriptivos
-   - Estructura consistente
-
-2. **Mocking**:
-   - Repositorios simulados
-   - JWT simulado
-   - Request/Response simulados
-
-3. **Aserciones**:
-   - Validación de estados HTTP
-   - Verificación de respuestas
-   - Comprobación de llamadas
-
-4. **Manejo de Errores**:
-   - Casos de borde
-   - Errores esperados
-   - Validaciones de entrada
+### Cobertura
+Las pruebas cubren:
+- Flujos exitosos
+- Manejo de errores
+- Validaciones de datos
+- Autenticación y autorización
+- Operaciones CRUD
+- Estados de recursos
 
 ## GitFlow
 
@@ -657,226 +586,3 @@ git checkout main
 git merge release/1.0.0
 git tag -a v1.0.0 -m "Version 1.0.0"
 ```
-
-## Implementación Detallada
-
-### Controladores
-Cada controlador implementa una interfaz específica y sigue el patrón Repository:
-
-#### AuthController
-```typescript
-class AuthController {
-    constructor(private userRepository: IUserRepository) {}
-    
-    // Métodos principales
-    async login(req: Request, res: Response): Promise<void>
-    async register(req: Request, res: Response): Promise<void>
-}
-```
-
-#### CategoryController
-```typescript
-class CategoryController {
-    constructor(private categoryRepository: ICategoryRepository) {}
-    
-    // Métodos CRUD
-    async findAll(req: Request, res: Response): Promise<void>
-    async findById(req: Request, res: Response): Promise<void>
-    async create(req: Request, res: Response): Promise<void>
-    async update(req: Request, res: Response): Promise<void>
-    async toggleStatus(req: Request, res: Response): Promise<void>
-}
-```
-
-#### ProductController
-```typescript
-class ProductController {
-    constructor(private productRepository: IProductRepository) {}
-    
-    // Métodos principales
-    async findAll(req: Request, res: Response): Promise<void>
-    async updateStock(req: Request, res: Response): Promise<void>
-    async toggleStatus(req: Request, res: Response): Promise<void>
-}
-```
-
-### Middleware de Autenticación
-```typescript
-// Middleware de validación de token
-export const validateToken = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void>
-
-// Middleware de verificación de rol admin
-export const isAdmin = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void>
-```
-
-## Resumen de Implementación
-
-### 1. Arquitectura del Proyecto
-
-La API está construida siguiendo una arquitectura en capas:
-
-```
-Cliente <-> Controllers <-> Repositories <-> Base de Datos
-                ↑
-            Middleware
-```
-
-#### Componentes Principales:
-1. **Controllers**: Manejan las peticiones HTTP
-2. **Repositories**: Gestionan el acceso a datos
-3. **Middleware**: Controla autenticación y autorización
-4. **Tests**: Garantizan la calidad del código
-
-### 2. Funcionalidades Implementadas
-
-#### Autenticación y Usuarios
-- ✅ Registro de usuarios
-- ✅ Login con JWT
-- ✅ Gestión de roles (admin/user)
-- ✅ Protección de rutas
-
-#### Gestión de Categorías
-- ✅ CRUD completo
-- ✅ Control de estado activo/inactivo
-- ✅ Validaciones de existencia
-- ✅ Relación con productos
-
-#### Gestión de Productos
-- ✅ CRUD completo
-- ✅ Control de stock
-- ✅ Estado activo/inactivo
-- ✅ Asociación con categorías
-
-### 3. Pruebas Implementadas
-
-#### Cobertura Total
-```
-Controllers: 4 archivos   (412 líneas)
-Middleware:  1 archivo    (84 líneas)
-Total:       496 líneas de pruebas
-```
-
-#### Desglose por Componente
-
-1. **AuthController** (144 líneas)
-   - Login:
-     - ✓ Credenciales correctas
-     - ✓ Contraseña incorrecta
-     - ✓ Usuario no existe
-   - Registro:
-     - ✓ Usuario nuevo
-     - ✓ Email duplicado
-
-2. **CategoryController** (161 líneas)
-   - CRUD:
-     - ✓ Listar categorías
-     - ✓ Buscar por ID
-     - ✓ Crear nueva
-     - ✓ Actualizar existente
-   - Estado:
-     - ✓ Activar/Desactivar
-     - ✓ Validaciones
-
-3. **ProductController** (107 líneas)
-   - Productos:
-     - ✓ Listar activos
-     - ✓ Gestión de stock
-     - ✓ Control de estado
-   - Validaciones:
-     - ✓ Existencia
-     - ✓ Stock disponible
-
-4. **Middleware** (84 líneas)
-   - JWT:
-     - ✓ Validación de token
-     - ✓ Token ausente/inválido
-   - Roles:
-     - ✓ Verificación admin
-     - ✓ Acceso denegado
-
-### 4. Guía de Uso del Testing
-
-#### Ejecutar Pruebas
-```bash
-# Todas las pruebas
-npm run test
-
-# Con watch mode
-npm run test:watch
-
-# Con cobertura
-npm run test:coverage
-```
-
-#### Estructura de una Prueba
-```typescript
-describe('Componente', () => {
-    beforeEach(() => {
-        // Configuración inicial
-    })
-
-    describe('Funcionalidad', () => {
-        it('debería comportarse de X manera', async () => {
-            // Arrange
-            const input = {...}
-            
-            // Act
-            await controller.method()
-            
-            // Assert
-            expect(result).toBe(expected)
-        })
-    })
-})
-```
-
-#### Mocking
-```typescript
-// Repository Mock
-const mockRepository = {
-    find: jest.fn(),
-    create: jest.fn()
-} as jest.Mocked<IRepository>
-
-// Request/Response Mock
-const mockRequest = {
-    body: {},
-    params: {}
-} as Request
-```
-
-### 5. Métricas de Calidad
-
-#### Cobertura de Código
-- Líneas: > 80%
-- Funciones: > 80%
-- Ramas: > 80%
-- Statements: > 80%
-
-#### Estándares
-- ✅ TypeScript strict mode
-- ✅ ESLint configurado
-- ✅ Prettier para formato
-- ✅ Husky para pre-commit
-
-### 6. Mejores Prácticas Aplicadas
-
-#### En Código
-- ✅ Principios SOLID
-- ✅ DRY (Don't Repeat Yourself)
-- ✅ Inyección de dependencias
-- ✅ Manejo de errores consistente
-
-#### En Testing
-- ✅ AAA Pattern (Arrange-Act-Assert)
-- ✅ Pruebas independientes
-- ✅ Mocking efectivo
-- ✅ Nombres descriptivos
