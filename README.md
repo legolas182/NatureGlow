@@ -471,6 +471,29 @@ src/
 ├── services/       # Lógica de negocio
 ├── middleware/     # Middleware de autenticación y validación
 └── tests/          # Pruebas unitarias
+    ├── controllers/   # Tests de controladores
+    ├── middleware/    # Tests de middleware
+    ├── repositories/  # Tests de repositorios
+    └── utils/         # Utilidades para tests
+```
+
+## Testing
+
+### Estructura de Tests
+```
+src/tests/
+├── controllers/
+│   ├── AuthController.test.ts     (144 líneas)
+│   ├── CategoryController.test.ts (161 líneas)
+│   └── ProductController.test.ts  (107 líneas)
+├── middleware/
+│   └── authMiddleware.test.ts     (84 líneas)
+├── repositories/
+│   ├── UserRepository.test.ts
+│   ├── ProductRepository.test.ts
+│   └── CategoryRepository.test.ts
+└── utils/
+    └── testHelpers.ts            # Utilidades comunes para tests
 ```
 
 ## Patrón Repository
@@ -492,59 +515,6 @@ class ProductRepository implements IProductRepository {
     // Implementación de métodos
 }
 ```
-
-## Testing
-
-### Estructura y Organización
-
-```
-src/tests/
-├── controllers/
-│   ├── AuthController.test.ts     (144 líneas)
-│   ├── CategoryController.test.ts (161 líneas)
-│   └── ProductController.test.ts  (107 líneas)
-└── middleware/
-    └── authMiddleware.test.ts     (84 líneas)
-```
-
-### Componentes Testeados
-
-#### Controllers
-- **AuthController**: 
-  - Login: Validación de credenciales correctas, contraseña incorrecta y usuario no existente
-  - Registro: Registro exitoso y manejo de email duplicado
-  
-- **CategoryController**:
-  - CRUD completo de categorías
-  - Manejo de estados (activar/desactivar)
-  - Validación de categorías existentes/no existentes
-  - Manejo de errores en operaciones
-
-- **ProductController**:
-  - Listado de productos activos
-  - Actualización de stock
-  - Cambio de estado de productos
-  - Manejo de errores y productos no existentes
-
-#### Middleware
-- **authMiddleware**:
-  - Validación de tokens JWT
-  - Verificación de rol de administrador
-  - Manejo de tokens inválidos o ausentes
-
-### Tecnologías de Testing
-- Jest como framework principal
-- Mocking de repositorios y JWT
-- Simulación de Request/Response de Express
-
-### Cobertura
-Las pruebas cubren:
-- Flujos exitosos
-- Manejo de errores
-- Validaciones de datos
-- Autenticación y autorización
-- Operaciones CRUD
-- Estados de recursos
 
 ## GitFlow
 
